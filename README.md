@@ -8,19 +8,6 @@
 
 ---
 
-## 📦 仓库内容
-
-```
-.
-├── skill.md              # Skill 定义文件（Claude Code 读取）
-├── ocr_image.swift        # macOS OCR 脚本（期刊截图识别）
-├── README.md              # 本文件
-├── ATTRIBUTION.md         # 第三方版权声明
-└── LICENSE                # MIT
-```
-
----
-
 ## 🎯 主要功能
 
 - **微信文章解析** — 用 scrapling 动态浏览器渲染 JS 页面，curl 拿不到的内容全部提取
