@@ -4,9 +4,7 @@
 [![Release](https://img.shields.io/badge/release-v1.00-blue)](https://github.com/hmj238751-ui/cns_collector/releases)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)]()
 
-自动化论文收集的 Claude Code skill。从微信文章、DOI、期刊链接中提取论文元数据，下载 PDF，统一重命名，打包 ZIP 到桌面。
-
-每周十几篇微信论文推送，发一条链接，Claude 处理全流程——提取标题、查 DOI、下载 PDF、重命名、打包。你只需要点一下下载按钮。
+每周从微信收集 10-20 篇 CNS 论文，发链接 → 自动提取元数据 → 下载 PDF → 重命名 → 打包 ZIP 到桌面。已经稳定运行数十次。你只需要点一下下载按钮。
 
 ---
 
