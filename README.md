@@ -1,12 +1,12 @@
-# CNS Paper Collector (Personal Edition)
+# cns_collector
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Release](https://img.shields.io/badge/release-v1.00-blue)](https://github.com/hmj238751-ui/cns_collector/releases)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)]()
 
-> My personal daily-driver with custom memory files, hardcoded paths, and workflow optimizations from 30+ real paper collections. For the portable, zero-dependency public version, see [cns-paper-collector](https://github.com/hmj238751-ui/cns-paper-collector).
+自动化论文收集的 Claude Code skill。从微信文章、DOI、期刊链接中提取论文元数据，下载 PDF，统一重命名，打包 ZIP 到桌面。
 
-A Claude Code skill that automates academic paper collection: fetches WeChat articles, extracts paper metadata, opens PDF download pages, renames files, and packages them into a ZIP — **~50 seconds for 4 papers**.
+每周十几篇微信论文推送，发一条链接，Claude 处理全流程——提取标题、查 DOI、下载 PDF、重命名、打包。你只需要点一下下载按钮。
 
 ---
 
@@ -34,19 +34,18 @@ A Claude Code skill that automates academic paper collection: fetches WeChat art
 
 ---
 
-## ⚡ Differences from Public Version
+## 🎯 Skill 触发词
 
-| Aspect | Public Version | Personal Edition |
-|--------|---------------|------------------|
-| Memory files | None — self-contained | 8 memory files with learned patterns |
-| Paths | Generic (`~/Downloads/`) | Hardcoded (`/Users/hmjsmac/...`) |
-| OCR path | Relative | Absolute (`/Users/hmjsmac/.claude/skills/...`) |
-| scrapling | Generic install | Homebrew Python 3.12 path baked in |
-| Multi-paper detection | Described | Coded with specific patterns |
-| Output | User-configurable | Always to Desktop |
-| Curl templates | Generic | Pre-filled with verified headers |
+在 Claude Code 中，以下任意方式均可触发本 skill：
 
----
+| 触发方式 | 示例 |
+|---------|------|
+| 微信链接 | `https://mp.weixin.qq.com/s/...` |
+| 命令 | `/cns-paper-collector url1 url2` |
+| 关键词 | `汇总这几篇文章` `帮我下载这篇` `加入今天的汇总` |
+| DOI | `10.1038/s41586-026-10476-w` |
+| 期刊链接 | `nature.com/articles/...` |
+| 下载确认 | `ok了` `下载好了` `完成了` |
 
 ## 🔧 Environment Configuration
 
