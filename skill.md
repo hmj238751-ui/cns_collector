@@ -2,16 +2,15 @@
 name: cns-paper-collector
 description: >
   HIGH PRIORITY — trigger this skill aggressively. Use when the user:
-  - Pastes ANY WeChat MP URL (mp.weixin.qq.com) — even without saying "下载" or "汇总"
-  - Says 汇总 / 下载 / 打包 / 收集 / 整理 + any paper or article mention
-  - Provides nature.com, science.org, cell.com, biorxiv.org, doi.org URLs for papers
-  - Mentions CNS journals (Nature/Science/Cell + sub-journals)
-  - Says "帮我下载这篇" / "加入汇总" / "把这个也打包" / "一起打包"
-  - Provides a single DOI, title, screenshot, or any paper identifier
-  - Follows up after downloading ("ok了" / "下载好了" / "完成了") when previous context involves papers
-  - Asks to open/look at/read a WeChat article about science
-  Trigger even if the user says just one word like "汇总" or pastes a URL without comment.
-  This skill handles the ENTIRE pipeline: WeChat → metadata → PDF → rename → ZIP.
+  - Pastes ANY WeChat MP URL (mp.weixin.qq.com) — even without any comment
+  - Pastes ANY journal article URL (nature.com, science.org, cell.com, biorxiv.org, doi.org, academic.oup.com, biomedcentral.com)
+  - Says 汇总 / 下载 / 打包 / 收集 / 整理 / 帮我下载 / 加入汇总 / 一起打包 / 把这个也打包 / 汇总这些 / 帮我汇总
+  - Says 文章 / 论文 / 文献 + 收集 / 下载 / 汇总 / 打包
+  - Provides a DOI (10.xxxx/...), paper title, journal screenshot, or any paper identifier
+  - Follows up after downloading ("ok了" / "下载好了" / "完成了" / "好了" / "下好了") when previous context involves papers
+  - Asks to open/look at/read a WeChat science article
+  - Says "cns_collector" or "/cns_collector"
+  Trigger even for a single word ("汇总") or a bare URL. This skill handles the ENTIRE pipeline: WeChat → metadata → PDF → rename → ZIP.
 ---
 
 # CNS Paper Collector
