@@ -89,7 +89,7 @@ paper_dois = re.findall(r'10\.\d{4,}/[^\s"\'\)\]>#&，。；：]+', body)
 
 # Priority 2: No paper DOI → OCR journal screenshot
 # Download first content image (not cover/avatar), run:
-#   swift /Users/hmjsmac/.claude/skills/cns-paper-collector/ocr_image.swift <image>
+#   swift ~/.claude/skills/cns-paper-collector/ocr_image.swift <image>
 # Extract: title (longest English line), journal ("Nature"/"Science"/etc.), 
 #           date ("Published: DD Mon YYYY"), DOI if visible
 
@@ -230,7 +230,7 @@ scrapling extract stealthy-fetch "<url>" output.md --solve-cloudflare --real-chr
 
 ### OCR journal screenshot (macOS)
 ```bash
-swift /Users/hmjsmac/.claude/skills/cns-paper-collector/ocr_image.swift <image_path>
+swift ~/.claude/skills/cns-paper-collector/ocr_image.swift <image_path>
 ```
 
 ### Chrome new window

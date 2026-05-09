@@ -108,34 +108,27 @@ curl -sL -o ~/.claude/skills/cns-paper-collector/ocr_image.swift \
 
 ---
 
-## 🧠 Memory System
+## 🧠 持久记忆（可选）
 
-This edition uses Claude Code's persistent memory to remember preferences. Memory files live in `~/.claude/projects/-Users-hmjsmac/memory/`:
+本 skill 支持 Claude Code 的持久记忆功能。使用过程中，Claude 会自动记录你的偏好（如下载路径、命名习惯、常用出版商策略），存储在本地 `~/.claude/projects/` 目录中。这些文件不上传到 GitHub，仅存在于你的机器上。
 
-| File | Purpose |
-|------|---------|
-| `feedback-default-desktop.md` | ZIP output to Desktop |
-| `feedback-proactive-reporting.md` | Proactively report difficulties |
-| `reference-scrapling-patterns.md` | scrapling capabilities and limits |
-| `reference-paper-workflow-optimizations.md` | Speed optimization patterns |
-| `feedback-pdf-trigger.md` | pdf-renamer trigger words |
-| `feedback-cns-source-extraction.md` | Source extraction preferences |
-| `feedback-cns-metadata-speed.md` | DOI query optimization |
-| `MEMORY.md` | Master index |
+如果你从头开始使用，不需要任何记忆文件——skill 本身已经包含所有必要的规则。记忆只是让使用体验越来越好。
 
 ---
 
-## 📖 Supported Publishers
+## 📖 支持的出版商
 
-| Publisher | Strategy |
-|-----------|----------|
-| Nature OA + Nature Comms + Sci Reports | `curl` with verified headers |
-| Nature paywalled | Chrome (institutional login) |
-| Science | Chrome (Cloudflare) |
-| **Cell Press** | Chrome (Cloudflare impenetrable) |
-| bioRxiv | curl (no protection) |
-| Genome Biology | curl (BMC OA) |
-| Oxford Academic | curl → fallback Chrome |
+| 出版商 | 模式 | 说明 |
+|--------|:----:|------|
+| Nature OA / Nat Commun / Sci Reports | 🟢 全自动 | curl 直接下载，无需用户操作 |
+| Nature 付费 | 🟡 半自动 | Chrome 打开页面，用户通过机构登录后点下载 |
+| Science | 🟡 半自动 | Chrome 打开，用户通过 Cloudflare 验证后下载 |
+| Cell Press | 🟡 半自动 | Chrome 打开页面，用户手动点下载按钮（Cloudflare 太强，无法程序化） |
+| bioRxiv / medRxiv | 🟢 全自动 | curl 直接下载 |
+| Genome Biology | 🟢 全自动 | BMC OA，curl 直接下载 |
+| Oxford Academic | 🟡 半自动 | 先尝试 curl，失败则 Chrome |
+
+> **半自动 = Claude 帮你打开期刊页面，你点一下下载按钮。不需要搜 DOI、找链接、重命名、打包。**
 
 ---
 
