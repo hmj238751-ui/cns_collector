@@ -1,240 +1,171 @@
 # CNS Paper Collector (Personal Edition)
 
-> My personal daily-driver with custom memory, hardcoded paths, and workflow optimizations from 30+ real paper collections. Public portable version: [cns-paper-collector](https://github.com/hmj238751-ui/cns-paper-collector).
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Release](https://img.shields.io/badge/release-v1.00-blue)](https://github.com/hmj238751-ui/cns-paper-collector-personal/releases)
+[![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)]()
 
-A Claude Code skill that automates academic paper collection: fetches WeChat articles, extracts paper metadata, opens PDF download pages, renames files, and packages them into a ZIP.
+> My personal daily-driver with custom memory files, hardcoded paths, and workflow optimizations from 30+ real paper collections. For the portable, zero-dependency public version, see [cns-paper-collector](https://github.com/hmj238751-ui/cns-paper-collector).
 
-**You send a WeChat link. Claude does the rest. You just click Download.**
-
----
-
-## What it does
-
-```
-WeChat article / DOI / title → Claude extracts metadata → opens PDF in your browser → you click Download → ZIP on your Desktop
-```
-
-- Reads WeChat official account articles (mp.weixin.qq.com) via dynamic browser
-- Extracts paper titles, DOIs, journals, and dates from article text + journal screenshots (OCR)
-- Downloads Open Access PDFs automatically (curl)
-- Opens paywalled PDF pages in a new Chrome window for you to download
-- Renames PDFs to a standardized format: `YYYY-Journal-Title.pdf`
-- Packages everything into `SMOOTH_YYYYMMDD.zip` on your Desktop
-
-**~50 seconds for 4 papers. You only click the download button.**
+A Claude Code skill that automates academic paper collection: fetches WeChat articles, extracts paper metadata, opens PDF download pages, renames files, and packages them into a ZIP — **~50 seconds for 4 papers**.
 
 ---
 
-## Prerequisites
+## 📊 Workflow
 
-| Requirement | How to check | How to install |
-|-------------|-------------|----------------|
-| **Claude Code** | Run `claude --help` | [docs.anthropic.com](https://docs.anthropic.com/en/docs/claude-code) |
-| **scrapling** | Run `scrapling --help` | See [scrapling setup](#scrapling-setup) below |
-| **Google Chrome** | macOS: `/Applications/Google Chrome.app` | [google.com/chrome](https://www.google.com/chrome/) |
-| **Playwright browsers** | `playwright install chromium` | Bundled with scrapling setup |
-| **curl** | Run `curl --version` | Pre-installed on macOS/Linux |
-| **macOS 13+** (OCR) | Run `swift --version` | Built-in on macOS. Linux: see [Linux OCR](#linux-ocr) |
+```
+  WeChat link / DOI / title
+         │
+         ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 0: Metadata Extraction        │
+  │  DOI scan → OCR screenshot → Crossref │
+  └──────────────────┬───────────────────┘
+                     ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 1: PDF Download               │
+  │  Cache → curl (OA) → Chrome (paywall)│
+  └──────────────────┬───────────────────┘
+                     ▼
+  ┌──────────────────────────────────────┐
+  │  Phase 2: Rename & Package           │
+  │  YYYY-Journal-Title.pdf → ZIP → Desktop│
+  └──────────────────────────────────────┘
+```
 
-### scrapling setup
+---
 
-scrapling is the engine that fetches WeChat articles and extracts metadata. It's the most complex dependency — here's the complete setup:
+## ⚡ Differences from Public Version
 
-**macOS:**
+| Aspect | Public Version | Personal Edition |
+|--------|---------------|------------------|
+| Memory files | None — self-contained | 8 memory files with learned patterns |
+| Paths | Generic (`~/Downloads/`) | Hardcoded (`/Users/hmjsmac/...`) |
+| OCR path | Relative | Absolute (`/Users/hmjsmac/.claude/skills/...`) |
+| scrapling | Generic install | Homebrew Python 3.12 path baked in |
+| Multi-paper detection | Described | Coded with specific patterns |
+| Output | User-configurable | Always to Desktop |
+| Curl templates | Generic | Pre-filled with verified headers |
+
+---
+
+## 🔧 Environment Configuration
+
+### Prerequisites
+
+| Requirement | Check | This machine |
+|-------------|-------|:---:|
+| Claude Code | `claude --help` | ✓ |
+| scrapling 0.2.99+ | `scrapling --help` | ✓ |
+| Homebrew Python 3.12 | `/opt/homebrew/opt/python@3.12/bin/python3.12` | ✓ |
+| Google Chrome | `/Applications/Google Chrome.app` | ✓ |
+| Playwright | `playwright install chromium` | ✓ |
+| Swift 5.9+ (OCR) | `swift --version` | ✓ |
+| curl | `curl --version` | ✓ |
+
+### Setup (first time on a new machine)
+
 ```bash
-# 1. Ensure you're using Homebrew Python 3.12 (scrapling requires it)
+# 1. Install scrapling
 /opt/homebrew/opt/python@3.12/bin/python3.12 -m pip install --break-system-packages scrapling[all]
 
-# 2. Install Playwright's browser
+# 2. Playwright browser
 playwright install chromium
 
-# 3. Verify
-scrapling --help
-```
-
-**Linux (Debian/Ubuntu):**
-```bash
-# 1. Install system dependencies
-sudo apt install python3.12 python3.12-pip
-
-# 2. Install scrapling
-pip install scrapling[all]
-
-# 3. Install Playwright dependencies and browser
-playwright install-deps chromium
-playwright install chromium
+# 3. Clone this skill
+git clone https://github.com/hmj238751-ui/cns-paper-collector-personal.git ~/.claude/skills/cns-paper-collector/
 
 # 4. Verify
-scrapling --help
-```
-
-**Why scrapling?** WeChat pages are entirely JavaScript-rendered. Static HTTP clients (curl, requests) return empty HTML shells — there's no article content to parse. scrapling launches a real Chrome browser, renders the full page including all JavaScript, and extracts the rendered content. It also handles TLS fingerprinting, anti-bot headers, and Cloudflare challenges for journal sites.
-
-scrapling is MIT-licensed open source. See [ATTRIBUTION.md](ATTRIBUTION.md) for full copyright details.
-
-**Troubleshooting scrapling:**
-
-| Problem | Solution |
-|---------|----------|
-| `pip: command not found` | Use `pip3` or `python3 -m pip` |
-| `error: externally-managed-environment` (macOS Homebrew) | Add `--break-system-packages` flag |
-| `No module named 'scrapling'` after install | Check you're using the correct Python: `which python3` |
-| `BrowserType.launch: Executable doesn't exist` | Run `playwright install chromium` |
-| `PyObjC` build fails during install | Not critical — the core features still work without `camoufox` |
-
----
-
-## Installation
-
-### Method 1: git clone (recommended)
-
-```bash
-git clone https://github.com/hmj238751-ui/cns-paper-collector.git ~/.claude/skills/cns-paper-collector/
-```
-
-Then tell Claude: `请用 cns-paper-collector 这个 skill。`
-
-### Method 2: Direct download (if you can't use git)
-
-```bash
-# Download the skill file directly
-mkdir -p ~/.claude/skills/cns-paper-collector/
-curl -sL -o ~/.claude/skills/cns-paper-collector/SKILL.md \
-  https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector/main/SKILL.md
-curl -sL -o ~/.claude/skills/cns-paper-collector/ocr_image.swift \
-  https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector/main/ocr_image.swift
-```
-
-### Method 3: GitHub ZIP download
-
-1. Go to `https://github.com/hmj238751-ui/cns-paper-collector`
-2. Click the green `Code` button → `Download ZIP`
-3. Unzip to `~/.claude/skills/cns-paper-collector/`
-
-### Method 4: One-liner (macOS)
-
-```bash
-mkdir -p ~/.claude/skills/cns-paper-collector/ && cd ~/.claude/skills/cns-paper-collector/ && curl -sLO https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector/main/SKILL.md && curl -sLO https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector/main/ocr_image.swift && echo "Done. Tell Claude: /cns-paper-collector"
+claude --help && scrapling --help && swift --version && echo "Ready"
 ```
 
 ---
 
-## Usage
+## 🚀 Quick Start
 
-Start a Claude Code session and send a WeChat article link:
-
-```
+```bash
 claude
-> https://mp.weixin.qq.com/s/oB9qCK7bBLEY54JHt7KRDw
+> https://mp.weixin.qq.com/s/...
 ```
 
-Or use the slash command:
-
+Or batch:
 ```
-/cns-paper-collector https://mp.weixin.qq.com/s/... https://mp.weixin.qq.com/s/...
-```
-
-Claude will:
-1. Fetch the article content
-2. Extract the paper title, journal, and DOI
-3. Open the PDF download page in Chrome
-4. Ask you to click "Download PDF"
-5. Rename and package everything into a ZIP on your Desktop
-
----
-
-## Supported publishers
-
-| Publisher | Auto-download | Notes |
-|-----------|:---:|-------|
-| Nature (flagship) OA | Yes | curl with `Accept: application/pdf` |
-| Nature Communications | Yes | Open Access |
-| Scientific Reports | Yes | Open Access |
-| Nature paywalled | No | Opens in Chrome for institutional login |
-| Science | No | Opens in Chrome after Cloudflare |
-| **Cell Press** | **No** | Cloudflare is impenetrable — always manual |
-| bioRxiv / medRxiv | Yes | No protection |
-| Genome Biology | Yes | BMC Open Access |
-| Oxford Academic | Sometimes | Try curl, fallback to Chrome |
-
----
-
-## Skill architecture
-
-```
-Input (WeChat/DOI/title)
-  │
-  ├─ Phase 0: Metadata extraction
-  │   ├─ DOI embedded in URL → extract directly
-  │   ├─ WeChat article → scrapling dynamic browser → scan DOI / OCR screenshot
-  │   └─ Title only → batch Crossref API lookup
-  │
-  ├─ Phase 1: PDF download
-  │   ├─ Cache check → skip if already downloaded
-  │   ├─ curl (OA journals) → validate %PDF- header
-  │   ├─ Chrome new window (paywalled) → user clicks download
-  │   └─ Give up (Cell.com)
-  │
-  └─ Phase 2: Rename & package
-      └─ YYYY-Journal-Title.pdf → SMOOTH_YYYYMMDD.zip → Desktop
+/cns-paper-collector url1 url2 url3
 ```
 
 ---
 
-## Linux OCR
-
-The macOS OCR script (`ocr_image.swift`) uses Apple Vision framework. Linux users should install `tesseract` instead:
+## 💾 Installation
 
 ```bash
-sudo apt install tesseract-ocr tesseract-ocr-eng tesseract-ocr-chi-sim
-tesseract screenshot.png stdout
+git clone https://github.com/hmj238751-ui/cns-paper-collector-personal.git ~/.claude/skills/cns-paper-collector/
 ```
 
-Tell Claude to use `tesseract` instead of `swift ocr_image.swift` when on Linux.
+Direct download:
+```bash
+mkdir -p ~/.claude/skills/cns-paper-collector/
+curl -sL -o ~/.claude/skills/cns-paper-collector/skill.md \
+  https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector-personal/main/skill.md
+curl -sL -o ~/.claude/skills/cns-paper-collector/ocr_image.swift \
+  https://raw.githubusercontent.com/hmj238751-ui/cns-paper-collector-personal/main/ocr_image.swift
+```
 
 ---
 
-## Windows notes
+## 🧠 Memory System
 
-- Replace `open -a "Google Chrome"` with `start chrome`
-- Replace `~/Desktop/` with `%USERPROFILE%\Desktop\`
-- Replace `~/Downloads/` with `%USERPROFILE%\Downloads\`
-- scrapling may require WSL or Git Bash (not tested on native Windows)
-- The OCR script is macOS-only; Windows users need `tesseract` via WSL or skip OCR
+This edition uses Claude Code's persistent memory to remember preferences. Memory files live in `~/.claude/projects/-Users-hmjsmac/memory/`:
 
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| "scrapling: command not found" | `pip install scrapling[all]` |
-| WeChat captcha on fetch | Claude staggers requests by 2-3s. If still failing, increase stagger. |
-| curl returns 406 | Paper is paywalled. Opens in Chrome instead. |
-| Cell paper can't download | Expected. Cell.com blocks all programmatic access. Open in Chrome. |
-| OCR not working (Linux) | Install tesseract. See [Linux OCR](#linux-ocr). |
-| ZIP not on Desktop | Check custom download paths. The skill uses `~/Downloads/` and `~/Desktop/`. |
+| File | Purpose |
+|------|---------|
+| `feedback-default-desktop.md` | ZIP output to Desktop |
+| `feedback-proactive-reporting.md` | Proactively report difficulties |
+| `reference-scrapling-patterns.md` | scrapling capabilities and limits |
+| `reference-paper-workflow-optimizations.md` | Speed optimization patterns |
+| `feedback-pdf-trigger.md` | pdf-renamer trigger words |
+| `feedback-cns-source-extraction.md` | Source extraction preferences |
+| `feedback-cns-metadata-speed.md` | DOI query optimization |
+| `MEMORY.md` | Master index |
 
 ---
 
-## Contributing
+## 📖 Supported Publishers
 
-This skill was originally built and battle-tested over ~30 real-world paper collections across Nature, Science, Cell, and bioRxiv.
-
-Found a publisher pattern that works? A new anti-bot bypass? Open an issue or PR.
+| Publisher | Strategy |
+|-----------|----------|
+| Nature OA + Nature Comms + Sci Reports | `curl` with verified headers |
+| Nature paywalled | Chrome (institutional login) |
+| Science | Chrome (Cloudflare) |
+| **Cell Press** | Chrome (Cloudflare impenetrable) |
+| bioRxiv | curl (no protection) |
+| Genome Biology | curl (BMC OA) |
+| Oxford Academic | curl → fallback Chrome |
 
 ---
 
-## Credits
+## ❓ Troubleshooting
 
-This skill orchestrates several open-source tools. See [ATTRIBUTION.md](ATTRIBUTION.md) for full copyright details.
+| Problem | Fix |
+|---------|-----|
+| `scrapling: command not found` | `pip install scrapling[all]` via Homebrew Python 3.12 |
+| WeChat captcha | Increase stagger to 3-4s |
+| Nature 406 | Paywalled — Chrome instead |
+| Cell fails | Expected — always manual |
 
-- **scrapling** — Web scraping engine (MIT) — [github.com/scrapling/scrapling](https://github.com/scrapling/scrapling)
-- **Playwright** — Browser automation (Apache 2.0) — [playwright.dev](https://playwright.dev)
-- **Apple Vision** — macOS OCR framework (Apple Inc.)
-- **Crossref API** — Academic metadata — [crossref.org](https://www.crossref.org)
-- **curl** — HTTP client — [curl.se](https://curl.se)
+---
 
-## License
+## 📝 Citation
 
-MIT © [hmj238751-ui](https://github.com/hmj238751-ui)
+```bibtex
+@software{cns_paper_collector_personal,
+  author    = {hmj238751-ui},
+  title     = {CNS Paper Collector (Personal Edition)},
+  year      = {2026},
+  url       = {https://github.com/hmj238751-ui/cns-paper-collector-personal}
+}
+```
+
+## 📄 License & Credits
+
+This skill orchestrates: scrapling (MIT), Playwright (Apache 2.0), Apple Vision, Crossref API, curl. See [ATTRIBUTION.md](ATTRIBUTION.md).
+
+**CNS Paper Collector**: MIT © [hmj238751-ui](https://github.com/hmj238751-ui)
