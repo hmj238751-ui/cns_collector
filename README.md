@@ -179,6 +179,16 @@ claude
 
 ## 📄 许可与鸣谢
 
-本 skill 调度以下工具：scrapling (MIT)、Playwright (Apache 2.0)、Apple Vision、Crossref API、curl。详见 [ATTRIBUTION.md](ATTRIBUTION.md)。
+本 skill 调度以下开源工具：
+
+| 工具 | 许可 | 引用 |
+|------|------|------|
+| scrapling | BSD-3-Clause | 研究用途请引用 [Karim Shoair (2024)](https://github.com/D4Vinci/Scrapling) |
+| Playwright | Apache 2.0 | Microsoft |
+| Crossref API | 免费 | [crossref.org](https://www.crossref.org) |
+| Apple Vision | macOS SDK | Apple Inc. |
+| curl | curl license | [curl.se](https://curl.se) |
+
+详见 [ATTRIBUTION.md](ATTRIBUTION.md)。
 
 MIT © [hmj238751-ui](https://github.com/hmj238751-ui)

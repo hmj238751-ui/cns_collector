@@ -2,11 +2,21 @@
 
 ## scrapling
 
-This skill depends on **scrapling**, an open-source web scraping library.
+This skill depends on **scrapling**, an open-source web scraping library. If you use this skill for research purposes, please cite scrapling:
 
-- **Project**: [scrapling](https://github.com/scrapling/scrapling)
-- **License**: MIT
-- **Copyright**: scrapling contributors
+```bibtex
+@misc{scrapling,
+  author = {Karim Shoair},
+  title = {Scrapling},
+  year = {2024},
+  url = {https://github.com/D4Vinci/Scrapling},
+  note = {An adaptive Web Scraping framework for extracting structured data}
+}
+```
+
+- **Project**: [scrapling](https://github.com/D4Vinci/Scrapling)
+- **License**: BSD-3-Clause
+- **Copyright**: Karim Shoair & scrapling contributors
 
 scrapling is the core engine that enables WeChat article fetching. WeChat pages are entirely JavaScript-rendered — static HTTP clients (curl, requests) return empty HTML shells. scrapling's dynamic browser (built on Playwright) renders the full page, including article content, journal screenshots, and embedded DOIs.
 
@@ -47,7 +57,7 @@ Metadata lookups use the **Crossref REST API**.
 
 ---
 
-## CNS Paper Collector
+## cns_collector
 
 - **License**: MIT
 - **Copyright**: [hmj238751-ui](https://github.com/hmj238751-ui)
