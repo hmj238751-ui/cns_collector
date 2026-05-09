@@ -8,26 +8,39 @@
 
 ---
 
-## 📊 Workflow
+## 📦 仓库内容
 
 ```
-  WeChat link / DOI / title
+.
+├── skill.md              # Skill 定义文件（Claude Code 读取）
+├── ocr_image.swift        # macOS OCR 脚本（期刊截图识别）
+├── README.md              # 本文件
+├── ATTRIBUTION.md         # 第三方版权声明
+└── LICENSE                # MIT
+```
+
+---
+
+## 📊 工作流
+
+```
+  微信链接 / DOI / 期刊链接
          │
          ▼
-  ┌──────────────────────────────────────┐
-  │  Phase 0: Metadata Extraction        │
-  │  DOI scan → OCR screenshot → Crossref │
-  └──────────────────┬───────────────────┘
-                     ▼
-  ┌──────────────────────────────────────┐
-  │  Phase 1: PDF Download               │
-  │  Cache → curl (OA) → Chrome (paywall)│
-  └──────────────────┬───────────────────┘
-                     ▼
-  ┌──────────────────────────────────────┐
-  │  Phase 2: Rename & Package           │
-  │  YYYY-Journal-Title.pdf → ZIP → Desktop│
-  └──────────────────────────────────────┘
+  ┌──────────────────────────────┐
+  │  Phase 0: 提取元数据         │
+  │  DOI 扫描 → OCR 截图 → Crossref│
+  └──────────────┬───────────────┘
+                 ▼
+  ┌──────────────────────────────┐
+  │  Phase 1: 下载 PDF           │
+  │  缓存 → curl (全自动) → Chrome│
+  └──────────────┬───────────────┘
+                 ▼
+  ┌──────────────────────────────┐
+  │  Phase 2: 重命名 & 打包      │
+  │  YYYY-Journal-Title.pdf → ZIP│
+  └──────────────────────────────┘
 ```
 
 ---
@@ -49,59 +62,48 @@
 
 > 单独发一个微信链接或说一个"汇总"就能触发，不需要完整命令。
 
-## 🔧 Environment Configuration
+---
 
-### Prerequisites
+## 🔧 环境配置
 
-| Requirement | Check | This machine |
-|-------------|-------|:---:|
-| Claude Code | `claude --help` | ✓ |
-| scrapling 0.2.99+ | `scrapling --help` | ✓ |
-| Homebrew Python 3.12 | `/opt/homebrew/opt/python@3.12/bin/python3.12` | ✓ |
-| Google Chrome | `/Applications/Google Chrome.app` | ✓ |
-| Playwright | `playwright install chromium` | ✓ |
-| Swift 5.9+ (OCR) | `swift --version` | ✓ |
-| curl | `curl --version` | ✓ |
+### 前置条件
 
-### Setup (first time on a new machine)
+| 组件 | 检查命令 |
+|------|---------|
+| Claude Code | `claude --help` |
+| scrapling 0.2.99+ | `scrapling --help` |
+| Homebrew Python 3.12 | `/opt/homebrew/opt/python@3.12/bin/python3.12` |
+| Google Chrome | `/Applications/Google Chrome.app` |
+| Playwright | `playwright install chromium` |
+| Swift 5.9+ (OCR) | `swift --version` |
+| curl | `curl --version` |
+
+### 首次配置
 
 ```bash
-# 1. Install scrapling
+# 1. 安装 scrapling（微信页面渲染引擎）
 /opt/homebrew/opt/python@3.12/bin/python3.12 -m pip install --break-system-packages scrapling[all]
 
-# 2. Playwright browser
+# 2. 安装 Playwright 浏览器
 playwright install chromium
 
-# 3. Clone this skill
+# 3. 克隆本 skill
 git clone https://github.com/hmj238751-ui/cns_collector.git ~/.claude/skills/cns-paper-collector/
 
-# 4. Verify
-claude --help && scrapling --help && swift --version && echo "Ready"
+# 4. 验证
+claude --help && scrapling --help && swift --version && echo "就绪"
 ```
 
 ---
 
-## 🚀 Quick Start
-
-```bash
-claude
-> https://mp.weixin.qq.com/s/...
-```
-
-Or batch:
-```
-/cns-paper-collector url1 url2 url3
-```
-
----
-
-## 💾 Installation
+## 💾 安装
 
 ```bash
 git clone https://github.com/hmj238751-ui/cns_collector.git ~/.claude/skills/cns-paper-collector/
 ```
 
-Direct download:
+无 git 环境：
+
 ```bash
 mkdir -p ~/.claude/skills/cns-paper-collector/
 curl -sL -o ~/.claude/skills/cns-paper-collector/skill.md \
@@ -112,11 +114,18 @@ curl -sL -o ~/.claude/skills/cns-paper-collector/ocr_image.swift \
 
 ---
 
-## 🧠 持久记忆（可选）
+## 🚀 使用
 
-本 skill 支持 Claude Code 的持久记忆功能。使用过程中，Claude 会自动记录你的偏好（如下载路径、命名习惯、常用出版商策略），存储在本地 `~/.claude/projects/` 目录中。这些文件不上传到 GitHub，仅存在于你的机器上。
+```bash
+claude
+> https://mp.weixin.qq.com/s/...
+```
 
-如果你从头开始使用，不需要任何记忆文件——skill 本身已经包含所有必要的规则。记忆只是让使用体验越来越好。
+或批量：
+
+```
+/cns_collector url1 url2 url3
+```
 
 ---
 
@@ -136,30 +145,40 @@ curl -sL -o ~/.claude/skills/cns-paper-collector/ocr_image.swift \
 
 ---
 
-## ❓ Troubleshooting
+## 🧠 持久记忆（可选）
 
-| Problem | Fix |
-|---------|-----|
-| `scrapling: command not found` | `pip install scrapling[all]` via Homebrew Python 3.12 |
-| WeChat captcha | Increase stagger to 3-4s |
-| Nature 406 | Paywalled — Chrome instead |
-| Cell fails | Expected — always manual |
+本 skill 支持 Claude Code 的持久记忆功能。使用过程中，Claude 会自动记录你的偏好（如下载路径、命名习惯、常用出版商策略），存储在本地 `~/.claude/projects/` 目录中。这些文件不上传到 GitHub，仅存在于你的机器上。
+
+如果你从头开始使用，不需要任何记忆文件——skill 本身已经包含所有必要的规则。记忆只是让使用体验越来越好。
 
 ---
 
-## 📝 Citation
+## ❓ 常见问题
+
+| 问题 | 解决 |
+|------|------|
+| `scrapling: command not found` | 用 Homebrew Python 3.12 安装，见上方环境配置 |
+| 微信验证码 | 请求间隔增加到 3-4 秒 |
+| Nature 返回 406 | 付费文章——改用 Chrome |
+| Cell 下载失败 | 正常——Cell 的 Cloudflare 无法程序化突破 |
+
+---
+
+## 📝 引用
 
 ```bibtex
-@software{cns_paper_collector_personal,
+@software{cns_collector,
   author    = {hmj238751-ui},
-  title     = {CNS Paper Collector (Personal Edition)},
+  title     = {cns_collector: 微信文献自动收集工具},
   year      = {2026},
   url       = {https://github.com/hmj238751-ui/cns_collector}
 }
 ```
 
-## 📄 License & Credits
+---
 
-This skill orchestrates: scrapling (MIT), Playwright (Apache 2.0), Apple Vision, Crossref API, curl. See [ATTRIBUTION.md](ATTRIBUTION.md).
+## 📄 许可与鸣谢
 
-**CNS Paper Collector**: MIT © [hmj238751-ui](https://github.com/hmj238751-ui)
+本 skill 调度以下工具：scrapling (MIT)、Playwright (Apache 2.0)、Apple Vision、Crossref API、curl。详见 [ATTRIBUTION.md](ATTRIBUTION.md)。
+
+MIT © [hmj238751-ui](https://github.com/hmj238751-ui)
