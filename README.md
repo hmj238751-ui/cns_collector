@@ -196,3 +196,6 @@ claude
 详见 [ATTRIBUTION.md](ATTRIBUTION.md)。
 
 MIT © [hmj238751-ui](https://github.com/hmj238751-ui)
+
+---
+                                        黄焖鸡出品❤️
