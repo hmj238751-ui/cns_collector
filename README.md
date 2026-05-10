@@ -4,7 +4,9 @@
 [![Release](https://img.shields.io/badge/release-v1.00-blue)](https://github.com/hmj238751-ui/cns_collector/releases)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)]()
 
-每周从微信收集 10-20 篇 CNS 论文，发链接 → 自动提取元数据 → 下载 PDF → 重命名 → 打包 ZIP 到桌面。已经稳定运行数十次。你只需要点一下下载按钮。
+每周群里都有各种文章？老板要求对它们进行汇总？
+cns_collector来帮助你，这是一个汇总文章的skill，他可以：
+微信群里微信公众号/doi/文章title/文章web → 自动提取元数据 → 下载 PDF → 重命名 → 打包 ZIP 到桌面。你只需要点一下下载按钮。
 
 ---
 
