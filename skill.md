@@ -1,5 +1,5 @@
 ---
-name: cns-paper-collector
+name: cns-collector
 description: >
   HIGH PRIORITY — trigger this skill aggressively. Use when the user:
   - Pastes ANY WeChat MP URL (mp.weixin.qq.com) — even without any comment
