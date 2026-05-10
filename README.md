@@ -5,7 +5,9 @@
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey)]()
 
 每周群里都有各种文章？老板要求对它们进行汇总？
-cns_collector来帮助你，这是一个汇总文章的skill，他可以：
+
+cns_collector来帮助你，这是一个汇总文章的skill，他可以帮你做一下流程：
+
 微信群里微信公众号/doi/文章title/文章web → 自动提取元数据 → 下载 PDF → 重命名 → 打包 ZIP 到桌面。你只需要点一下下载按钮。
 
 ---
