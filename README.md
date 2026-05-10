@@ -1,4 +1,4 @@
-# cns_collector
+# cns_collector_skill
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Release](https://img.shields.io/badge/release-v1.00-blue)](https://github.com/hmj238751-ui/cns_collector/releases)
